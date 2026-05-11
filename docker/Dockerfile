@@ -1,33 +1,34 @@
 # ==============================================================================
 # Aircraft Engine Prognostics - Development Environment
 # ==============================================================================
-# Base: PyTorch 2.0.1 with CUDA 11.7 (GPU support included; falls back to CPU)
+# RTX 5070 (Blackwell sm_120) 지원을 위해 CUDA 12.8 기반
 # ==============================================================================
 
-FROM pytorch/pytorch:2.0.1-cuda11.7-cudnn8-runtime
+FROM nvidia/cuda:12.8.0-cudnn-runtime-ubuntu22.04
 
 LABEL maintainer="이강태 <gangtae9050@gmail.com>"
 LABEL description="Aircraft turbofan engine RUL prediction development environment"
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 # ---- System dependencies ----
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git \
-    curl \
-    wget \
-    vim \
-    htop \
-    unzip \
+    git curl wget vim htop unzip tree \
+    python3.10 python3-pip python3.10-dev \
+    && ln -sf /usr/bin/python3.10 /usr/bin/python \
     && rm -rf /var/lib/apt/lists/*
 
-# ---- Python environment ----
-WORKDIR /workspace
-
-# 의존성 먼저 설치 (Docker layer caching 최적화)
-COPY requirements.txt /tmp/requirements.txt
+# ---- PyTorch with CUDA 12.8 (RTX 5070 support) ----
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r /tmp/requirements.txt
+    pip install --no-cache-dir \
+    torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu128
 
-# Jupyter Lab 추가
+# ---- Project dependencies ----
+WORKDIR /workspace
+COPY requirements.txt /tmp/requirements.txt
+RUN pip install --no-cache-dir -r /tmp/requirements.txt
+
+# ---- Jupyter Lab ----
 RUN pip install --no-cache-dir \
     jupyterlab>=4.0.0 \
     ipywidgets>=8.0.0 \
@@ -38,9 +39,6 @@ ENV PYTHONPATH=/workspace
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
-# ---- Expose ports ----
-EXPOSE 8888   
-EXPOSE 6006   
+EXPOSE 8888 6006
 
-# ---- Default command ----
 CMD ["/bin/bash"]

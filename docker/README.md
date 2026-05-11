@@ -5,3 +5,6 @@
 ## 🏗️ Architecture
 
 ```
+
+cd ~/aircraft-engine-prognostics/docker
+docker compose up -d --build

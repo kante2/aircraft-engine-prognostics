@@ -1,0 +1,21 @@
+# Baseline LSTM Configuration
+data:
+  subset: FD001
+  window_size: 30
+  max_rul: 125
+  batch_size: 64
+  val_ratio: 0.2
+
+model:
+  name: baseline_lstm
+  input_dim: 18
+  hidden_dim: 64
+  num_layers: 2
+  dropout: 0.3
+
+training:
+  epochs: 50
+  lr: 0.001
+  weight_decay: 1.0e-5
+  patience: 10
+  seed: 42

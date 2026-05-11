@@ -30,13 +30,13 @@ services:
       - JUPYTER_TOKEN=prognostics
     
     # ---- GPU support (NVIDIA GPU 있을 때 주석 해제) ----
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: all
-    #           capabilities: [gpu]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     
     # ---- Keep container running interactively ----
     stdin_open: true
