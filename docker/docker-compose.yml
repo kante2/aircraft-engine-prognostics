@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  prognostics:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: aircraft-engine-prognostics:latest
+    container_name: prognostics-dev
+    
+    # ---- Volume mounts (호스트 ↔ 컨테이너 동기화) ----
+    volumes:
+      # 프로젝트 코드 전체 마운트 (실시간 양방향 동기화)
+      - ..:/workspace
+      
+      # Kaggle API 자격증명 (데이터 다운로드용, 선택)
+      - ~/.kaggle:/root/.kaggle:ro
+      
+      # Jupyter 설정 영속화
+      - jupyter-config:/root/.jupyter
+    
+    # ---- Port mappings (호스트:컨테이너) ----
+    ports:
+      - "8888:8888"   # Jupyter Lab
+      - "6006:6006"   # TensorBoard
+    
+    # ---- Environment variables ----
+    environment:
+      - PYTHONPATH=/workspace
+      - JUPYTER_TOKEN=prognostics
+    
+    # ---- GPU support (NVIDIA GPU 있을 때 주석 해제) ----
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]
+    
+    # ---- Keep container running interactively ----
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+    
+    # ---- Working directory ----
+    working_dir: /workspace
+
+# ---- Named volumes (영속 데이터) ----
+volumes:
+  jupyter-config:
+    name: prognostics-jupyter-config
