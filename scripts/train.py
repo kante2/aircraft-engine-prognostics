@@ -20,7 +20,7 @@ def main(config_path="configs/baseline.yaml"):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device: {device}")
 
-    # Data
+    # Data Load
     train_loader, val_loader, test_loader = get_dataloaders(
         subset=cfg["data"]["subset"],
         batch_size=cfg["data"]["batch_size"],

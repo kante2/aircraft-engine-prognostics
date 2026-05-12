@@ -1,0 +1,17 @@
+{
+  "baseline_lstm": {
+    "rmse": 14.71,
+    "nasa_score": 311,
+    "params": 56897
+  },
+  "cnn_lstm": {
+    "rmse": 15.18,
+    "nasa_score": 334,
+    "params": 76833
+  },
+  "attention_lstm": {
+    "rmse": 15.5,
+    "nasa_score": 370,
+    "params": 59010
+  }
+}
